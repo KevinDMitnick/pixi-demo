@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PIXI DEMO</title>
+</head>
+
+<body>
+    <div id="pixi_container"></div>
+    <script src="../../library/pixi.min.js"></script>
+    <script>
+        const imageUrl = require('./imgs/background.jpeg');
+
+        let pixi = new PIXI.Application({
+            height: window.innerHeight,
+            width: window.innerWidth
+        });
+        document.getElementById('pixi_container').appendChild(pixi.view);
+
+        let bgSprite = new PIXI.Sprite(PIXI.Texture.fromImage(imageUrl));
+        bgSprite.name = 'background';
+        pixi.stage.addChild(bgSprite);
+    </script>
+</body>
+
+</html>
