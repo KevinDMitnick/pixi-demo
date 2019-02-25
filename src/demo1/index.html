@@ -12,17 +12,69 @@
     <div id="pixi_container"></div>
     <script src="../../library/pixi.min.js"></script>
     <script>
-        const imageUrl = './imgs/background.jpeg';
+        const BG = './imgs/background.jpeg',
+            BALL = './imgs/ball.png';
 
         let pixi = new PIXI.Application({
             height: window.innerHeight,
             width: window.innerWidth
         });
+        pixi.stage.position.set(pixi.screen.width / 2, pixi.screen.height / 2);
         document.getElementById('pixi_container').appendChild(pixi.view);
 
-        let bgSprite = new PIXI.Sprite(PIXI.Texture.fromImage(imageUrl));
-        bgSprite.name = 'background';
+        let bgSprite = new PIXI.Sprite(PIXI.Texture.fromImage(BG));
+        bgSprite.anchor.set(.5, .5);
+        Object.assign(bgSprite, {
+            name: 'background',
+            width: bgSprite.width * pixi.screen.width / bgSprite.height,
+            height: pixi.screen.height
+        })
         pixi.stage.addChild(bgSprite);
+
+        let footballSprite = new PIXI.Sprite(PIXI.Texture.fromImage(BALL));
+        Object.assign(footballSprite, {
+            name: 'football',
+            width: pixi.screen.width / 10,
+            height: footballSprite.height * pixi.screen.width / (10 * footballSprite.width),
+            custom: {
+                // for kick
+                direction: Math.random() * Math.PI,
+                speed: 4,
+                kickLock: false,
+            },
+            kick: function () {
+                const rotateSpeed = .05;
+                let directionChange = 0;
+                this.position.set(this.x + Math.cos(this.custom.direction) * this.custom.speed, this.y + Math.sin(this.custom.direction) * this.custom.speed);
+                this.rotation += rotateSpeed;
+                this.custom.direction += directionChange;
+                if (!this.custom.kickLock) {
+                    switch (true) {
+                        case Math.abs(this.x) >= (pixi.screen.width - this.width)/2: {
+                            this.custom.direction = -this.custom.direction + Math.PI;
+                            this.custom.kickLock = true;
+                            console.log(this.custom.direction)
+                        }; break;
+                        case Math.abs(this.y) >= (pixi.screen.height - this.width)/2: {
+                            this.custom.direction = -this.custom.direction; 
+                            this.custom.kickLock = true;
+                            console.log(this.custom.direction)
+                        }; break;
+                    }
+                } else {
+                    if (Math.abs(this.y) < (pixi.screen.height - this.width)/2 && Math.abs(this.x) < (pixi.screen.width - this.width)/2) {
+                        this.custom.kickLock = false;
+                        directionChange = (Math.random() - .5)*.2;
+                        console.log(directionChange)
+                    }
+                }
+                this.custom.kickID = requestAnimationFrame(this.kick.bind(this))
+            }
+        })
+        footballSprite.anchor.set(.5, .5);
+        pixi.stage.addChild(footballSprite);
+        // Animation Start
+        footballSprite.kick();
     </script>
 </body>
 
