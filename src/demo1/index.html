@@ -41,13 +41,13 @@
                 direction: Math.random() * Math.PI,
                 speed: 4,
                 kickLock: false,
+                directionChange: 0,
             },
             kick: function () {
                 const rotateSpeed = .05;
-                let directionChange = 0;
                 this.position.set(this.x + Math.cos(this.custom.direction) * this.custom.speed, this.y + Math.sin(this.custom.direction) * this.custom.speed);
                 this.rotation += rotateSpeed;
-                this.custom.direction += directionChange;
+                this.custom.direction += this.custom.directionChange;
                 if (!this.custom.kickLock) {
                     switch (true) {
                         case Math.abs(this.x) >= (pixi.screen.width - this.width)/2: {
@@ -64,8 +64,7 @@
                 } else {
                     if (Math.abs(this.y) < (pixi.screen.height - this.width)/2 && Math.abs(this.x) < (pixi.screen.width - this.width)/2) {
                         this.custom.kickLock = false;
-                        directionChange = (Math.random() - .5)*.2;
-                        console.log(directionChange)
+                        this.custom.directionChange = (Math.random() - .5)*.05;
                     }
                 }
                 this.custom.kickID = requestAnimationFrame(this.kick.bind(this))
